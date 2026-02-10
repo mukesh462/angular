@@ -1,0 +1,40 @@
+<div class=" m-5">
+   
+<div class="grid grid-cols-4 grid-rows-4 gap-4">
+    <div class="col-span-3 row-span-4">
+        <ul>
+            <li class="border p-5 my-2" *ngFor="let item of items()">
+                <div class="flex gap-3">
+                    <img class="h-20" src="{{item.image}}" alt="">  <div class="flex flex-col">
+                    <p class="text-lg">name : {{item.title}}</p>
+                    <p class="text-lg">price : {{item.price}}</p>
+                    <p class="text-lg">description : {{item.description}}</p>
+                    <button class="bg-amber-300 text-black w-fit p-2 rounded-md cursor-pointer" (click)="addToCart(item)" >Add to cart</button>
+                </div>
+                </div>
+              
+            </li>
+        </ul>
+    </div>
+    <div class="row-span-4 col-start-4">
+         <ul>
+            <li class="border p-5 my-2" *ngFor="let item of cart()">
+                <div class="flex gap-3">
+                    <img class="h-20" src="{{item.image}}" alt="">  <div class="flex flex-col">
+                    <p class="text-lg">name : {{item.title}}</p>
+                    <p class="text-lg">price : {{item.price}}</p>
+                    <p class="text-lg">description : {{item.description}}</p>
+                    <p class="text-lg">quantity : {{item.quantity}}</p>
+                    <button class="bg-amber-300 text-black w-fit p-2 rounded-md cursor-pointer" >Remove</button>
+                </div>
+                </div>
+              
+            </li>
+        </ul>
+        <div class="">
+            <p>Price : {{price()}}</p>
+        </div>
+    </div>
+</div>
+    
+</div>

@@ -1,0 +1,19 @@
+ <table class="border w-full">
+      <tr class="border">
+        <th>id</th>
+        <th>name</th>
+        <th>price</th>
+        <th>action</th>
+      </tr>
+      <tbody>
+        @for (item of student; track $index) {
+          <tr>
+            <td>{{$index + 1}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.price}}</td>
+            <td><button class="border bg-amber-300 text-black">Edit</button></td>
+          </tr>
+        }
+       
+      </tbody>
+    </table>

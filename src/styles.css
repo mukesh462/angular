@@ -1,3 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@layer components {
+  .input-field {
+    @apply border-2 border-black block m-5;
+  }
+}

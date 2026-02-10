@@ -1,0 +1,17 @@
+<div class="grid grid-cols-2 w-full my-5 h-full">
+  <p>Data : {{ data | json }}</p>
+  <div class="flex justify-center items-center w-full">
+    <form action="" class="border" [formGroup]="form">
+      <label for="name"></label>
+      <input type="text" class="input-field" id="name" name="name" formControlName="name" />
+      <label for="price"></label>
+      <input type="text" class="input-field" formControlName="price" />
+      <button type="submit" class="border bg-amber-300 text-black" (click)="addStudent()">
+        Add
+      </button>
+    </form>
+  </div>
+  <div class="">
+    <app-table [student]="student"></app-table>
+  </div>
+</div>
