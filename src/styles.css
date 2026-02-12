@@ -7,3 +7,7 @@
     @apply border-2 border-black block m-5;
   }
 }
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}

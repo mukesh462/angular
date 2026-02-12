@@ -1,158 +1,381 @@
-<app-modal-shell title="Select Template" width="900px" height="85vh">
-  
+<app-modal-shell title="Add Status" width="950px" height="85vh">
   <div class="flex flex-col h-full w-full overflow-hidden relative">
-
     <div class="grid grid-cols-1 md:grid-cols-3 flex-1 min-h-0 h-full">
-      
-      <div class="col-span-1 border-r border-gray-200 bg-gray-50 flex flex-col h-full overflow-hidden transition-all"
-           [ngClass]="{
-             'hidden': !showMobileMenu, 
-             'flex absolute inset-0 z-20 w-full h-full bg-gray-50': showMobileMenu,
-             'md:flex md:static md:w-auto md:bg-gray-50': true
-           }">
-        
-        <div class="md:hidden flex items-center gap-2 p-4 border-b bg-white shrink-0">
+      <div
+        class="col-span-1 border-r border-gray-100 bg-gray-50/50 flex flex-col h-full overflow-hidden"
+        [ngClass]="{
+          'hidden md:flex': !showMobileMenu,
+          'flex absolute inset-0 z-20 bg-white': showMobileMenu,
+        }"
+      >
+        <div class="md:hidden flex items-center gap-2 p-4 border-b">
           <button (click)="showMobileMenu = false" mat-icon-button>
-             <mat-icon>arrow_back</mat-icon>
+            <mat-icon>arrow_back</mat-icon>
           </button>
-          <span class="font-bold text-lg">Select a Template</span>
+          <span class="font-bold">Status Type</span>
         </div>
 
-        <div class="flex-1 overflow-y-auto min-h-0 p-4 custom-scrollbar">
-          <h1 class="hidden md:block font-bold mb-3 text-gray-700">Templates ({{ templateList.length }})</h1>
+        <div class="flex-1 overflow-y-auto p-6">
+          <h2 class="text-gray-700 font-bold mb-4">Status Type</h2>
 
-          <ul class="space-y-1">
-            <li class="p-2 bg-red-50 text-red-500 rounded font-medium cursor-pointer flex justify-between items-center"
-                (click)="showMobileMenu = false">
-              Default Status
-              <mat-icon class="text-sm h-4 w-4 md:hidden">check</mat-icon>
-            </li>
-            
-            <li *ngFor="let item of templateList"
-                (click)="showMobileMenu = false" 
-                class="p-2 hover:bg-gray-200 rounded cursor-pointer text-gray-700 transition-colors">
-              {{ item }}
-            </li>
-          </ul>
-        </div>
+          <div
+            (click)="setType('default')"
+            class="flex items-center gap-3 mb-4 cursor-pointer group"
+          >
+            <div
+              class="w-5 h-5 rounded-full border flex items-center justify-center transition-colors"
+              [ngClass]="selectedType === 'default' ? 'border-gray-800' : 'border-gray-400'"
+            >
+              <div
+                *ngIf="selectedType === 'default'"
+                class="w-3 h-3 bg-gray-800 rounded-full"
+              ></div>
+            </div>
+            <span [class.font-medium]="selectedType === 'default'" class="text-gray-700"
+              >Default Status</span
+            >
+          </div>
 
-        <div class="p-4 border-t border-gray-200 bg-gray-50 shrink-0">
-          <div class="text-blue-600 cursor-pointer font-medium hover:underline">+ Create new template</div>
+          <div
+            (click)="setType('custom')"
+            class="flex items-center gap-3 mb-2 cursor-pointer group"
+          >
+            <div
+              class="w-5 h-5 rounded-full border flex items-center justify-center transition-colors"
+              [ngClass]="selectedType === 'custom' ? 'border-gray-800' : 'border-gray-400'"
+            >
+              <div *ngIf="selectedType === 'custom'" class="w-3 h-3 bg-gray-800 rounded-full"></div>
+            </div>
+            <span [class.font-medium]="selectedType === 'custom'" class="text-gray-700"
+              >Custom Status</span
+            >
+          </div>
+
+          <div *ngIf="selectedType === 'custom'" class="pl-8 mt-4 animate-fade-in">
+            <div class="flex justify-between items-center text-gray-500 text-sm font-medium mb-2">
+              <span>Templates</span><span>(3)</span>
+            </div>
+            <ul class="space-y-1 mb-4">
+              <li
+                *ngFor="let item of templateList"
+                class="py-2 px-3 text-gray-500 hover:bg-gray-100 rounded cursor-pointer text-sm"
+              >
+                {{ item }}
+              </li>
+              <li
+                class="py-2 px-3 bg-red-50 text-red-500 rounded cursor-pointer text-sm font-medium"
+              >
+                {{ activeTemplate }}
+              </li>
+            </ul>
+            <div
+              class="flex items-center gap-2 text-gray-800 font-medium cursor-pointer hover:text-black text-sm"
+            >
+              <span>New Template</span><mat-icon class="text-lg w-5 h-5">add</mat-icon>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="col-span-1 md:col-span-2 bg-white flex flex-col h-full overflow-hidden min-h-0">
-        
-        <div class="md:hidden flex justify-between items-center p-4 border-b bg-gray-50 shadow-sm shrink-0">
-          <div class="flex flex-col">
-             <span class="text-xs text-gray-500 uppercase font-bold">Current Template</span>
-             <span class="font-bold text-gray-800">Default Status</span>
-          </div>
-          <button (click)="showMobileMenu = true" 
-                  class="text-blue-600 font-medium text-sm border border-blue-200 bg-blue-50 px-3 py-1 rounded-full">
-            Change
-          </button>
+      <div
+        class="col-span-1 md:col-span-2 bg-white flex flex-col h-full overflow-hidden min-h-0 relative"
+      >
+        <div class="md:hidden p-4 border-b flex justify-between items-center">
+          <span class="font-bold"
+            >Current: {{ selectedType === 'default' ? 'Default' : 'Custom' }}</span
+          >
+          <button (click)="showMobileMenu = true" class="text-blue-600 font-medium">Change</button>
         </div>
 
-        <div class="flex-1 overflow-y-auto min-h-0 p-4 md:p-6 custom-scrollbar">
-          <div cdkDropListGroup class="space-y-6 md:space-y-8">
-            <div *ngFor="let group of groups">
-              <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-3">
-                {{ group.title }} <span class="font-normal">({{ group.items.length }})</span>
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+          <div *ngIf="selectedType === 'default'" class="space-y-6">
+            <div *ngFor="let group of defaultGroups">
+              <h4 class="text-gray-500 text-sm font-medium mb-3">
+                {{ group.title }} <span class="text-gray-400">({{ group.count }})</span>
               </h4>
-
-              <div cdkDropList 
-                   [cdkDropListData]="group.items" 
-                   (cdkDropListDropped)="drop($event)" 
-                   class="space-y-2 min-h-[10px]">
-                
-                <div *ngFor="let status of group.items; let i = index" cdkDrag [cdkDragDisabled]="group.editingIndex === i">
-                  
-                  <div *ngIf="group.editingIndex !== i" 
-                       class="flex border w-full md:max-w-[80%] border-gray-200 p-2 md:p-3 rounded-lg items-center bg-white hover:border-gray-300 transition-colors group select-none shadow-sm">
-                    
-                    <div *cdkDragPlaceholder class="opacity-0"></div>
-
-                    <div class="flex gap-3 items-center w-full">
-                      <mat-icon cdkDragHandle 
-                                class="text-gray-300 cursor-grab active:cursor-grabbing p-1 -ml-1" 
-                                fontIcon="drag_indicator"></mat-icon>
-
-                      <div class="w-3 h-3 rounded-full flex-shrink-0" [ngClass]="status.color"></div>
-                      <span class="font-medium text-gray-700 text-sm truncate">{{ status.name }}</span>
-                      
-                      <mat-icon (click)="startEdit(group, i, status)" 
-                                class="ml-auto text-gray-300 text-lg hover:text-blue-500 cursor-pointer" 
-                                fontIcon="keyboard_arrow_right"></mat-icon>
-                    </div>
+              <div class="space-y-3">
+                <div
+                  *ngFor="let item of group.items"
+                  class="flex items-center border rounded-lg p-3 bg-white"
+                >
+                  <div class="w-8 flex justify-center">
+                    <mat-icon class="text-gray-300">drag_indicator</mat-icon>
                   </div>
+                  <div class="w-6 h-6 rounded md:rounded-md mx-3" [ngClass]="item.color"></div>
+                  <span class="text-gray-700 font-medium">{{ item.name }}</span>
+                  <mat-icon class="ml-auto text-gray-300">keyboard_arrow_right</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
 
-                  <div *ngIf="group.editingIndex === i" 
-                       class="border border-blue-500 rounded-lg p-3 bg-blue-50 animate-fade-in w-full md:max-w-[80%]">
-                     
-                     <div class="flex items-center gap-2 mb-2">
-                        <div class="w-4 h-4 rounded-full flex-shrink-0" [ngClass]="group.editStatusColor"></div>
-                        <input type="text" 
-                               [(ngModel)]="group.editStatusName" 
-                               (keyup.enter)="saveEdit(group)" 
-                               class="bg-transparent border-none outline-none text-sm w-full font-medium text-gray-700 placeholder-gray-400" 
-                               autoFocus />
-                     </div>
-                     
-                     <div class="flex flex-wrap justify-between items-center mt-2 gap-2">
-                        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                           <div *ngFor="let color of colorOptions" 
-                                (click)="selectColor(group, color, true)" 
-                                [ngClass]="color" 
-                                class="w-5 h-5 rounded-full cursor-pointer hover:scale-110 transition-transform ring-1 ring-offset-1 ring-transparent flex-shrink-0" 
-                                [class.ring-gray-300]="group.editStatusColor === color"></div>
-                        </div>
-                        <div class="flex gap-2 text-xs ml-auto">
-                           <button (click)="cancelEdit(group)" class="text-gray-500 hover:text-gray-700 px-2 py-1">Cancel</button>
-                           <button (click)="saveEdit(group)" class="bg-blue-600 text-white px-3 py-1 rounded shadow-sm">Save</button>
-                        </div>
-                     </div>
-                  </div>
-                  </div>
+          <div *ngIf="selectedType === 'custom'" cdkDropListGroup class="space-y-8">
+            <div *ngFor="let group of customGroups">
+              <div class="flex justify-between items-center mb-3">
+                <h4 class="text-gray-500 text-sm font-medium">
+                  {{ group.title }} <span class="text-gray-400">({{ group.items.length }})</span>
+                </h4>
+                <button
+                  *ngIf="!group.isAdding"
+                  (click)="toggleAdd(group)"
+                  class="text-gray-400 hover:text-gray-600"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
               </div>
 
-              <div class="mt-2 w-full md:max-w-[80%]">
-                  <div *ngIf="!group.isAdding && group.editingIndex === -1" 
-                       (click)="toggleAdd(group)" 
-                       class="flex items-center gap-2 text-gray-400 hover:text-gray-600 cursor-pointer p-2 text-sm transition-colors">
-                    <mat-icon class="text-lg w-5 h-5" fontIcon="add"></mat-icon>
-                    <span>Add status</span>
-                  </div>
+              <div
+                cdkDropList
+                [cdkDropListData]="group.items"
+                (cdkDropListDropped)="drop($event)"
+                class="space-y-3 min-h-[10px]"
+              >
+                <div
+                  *ngFor="let status of group.items; let i = index"
+                  cdkDrag
+                  class="flex items-center border rounded-lg p-3 border-gray-300 hover:shadow-sm transition-shadow group select-none relative"
+                >
+                  <div *cdkDragPlaceholder class="opacity-0"></div>
+                  <mat-icon
+                    cdkDragHandle
+                    class="text-gray-300 cursor-grab active:cursor-grabbing w-8"
+                    >drag_indicator</mat-icon
+                  >
 
-                  <div *ngIf="group.isAdding" class="border border-blue-500 rounded-lg p-3 bg-blue-50 mt-2 animate-fade-in">
-                     <div class="flex items-center gap-2 mb-2">
-                      <div class="w-4 h-4 rounded-full flex-shrink-0" [ngClass]="group.newStatusColor"></div>
-                      <input type="text" [(ngModel)]="group.newStatusName" (keyup.enter)="saveNewStatus(group)" placeholder="Status name" class="bg-transparent border-none outline-none text-sm w-full font-medium text-gray-700 placeholder-gray-400" autoFocus />
-                    </div>
-                    <div class="flex flex-wrap justify-between items-center mt-2 gap-2">
-                      <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                        <div *ngFor="let color of colorOptions" (click)="selectColor(group, color, false)" [ngClass]="color" class="w-5 h-5 rounded-full cursor-pointer hover:scale-110 transition-transform ring-1 ring-offset-1 ring-transparent flex-shrink-0" [class.ring-gray-300]="group.newStatusColor === color"></div>
+                  <div
+                    class="w-6 h-6 rounded md:rounded-md mx-3 flex-shrink-0"
+                    [ngClass]="status.color"
+                  ></div>
+                  <span class="text-gray-700 font-medium flex-1 truncate">
+                    {{ status.name }}
+                    <span
+                      *ngIf="status.taskCount && status.taskCount > 0"
+                      class="text-xs text-gray-400 ml-2"
+                      >({{ status.taskCount }} tasks)</span
+                    >
+                  </span>
+
+                  <button
+                    [matMenuTriggerFor]="editMenu"
+                    (click)="prepareEdit(group, i, status); $event.stopPropagation()"
+                    class="ml-auto text-gray-600 p-1 cursor-pointer"
+                  >
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                  </button>
+
+                  <mat-menu #editMenu="matMenu" class="status-edit-menu" xPosition="before">
+                    <div
+                      (click)="$event.stopPropagation()"
+                      class="p-4 bg-white focus:outline-none"
+                      style="width: 340px"
+                    >
+                      <div class="mb-4">
+                        <input
+                          type="text"
+                          [(ngModel)]="group.tempEditName"
+                          (keydown.enter)="saveEdit()"
+                          class="w-full border border-gray-300 rounded px-3 py-2 text-gray-700 focus:border-[#F85890] focus:outline-none transition-colors"
+                          placeholder="Status Name"
+                        />
                       </div>
-                      <div class="flex gap-2 text-xs ml-auto">
-                        <button (click)="cancelAdd(group)" class="text-gray-500 hover:text-gray-700 px-2 py-1">Cancel</button>
-                        <button (click)="saveNewStatus(group)" class="bg-blue-600 text-white px-3 py-1 rounded shadow-sm">Add</button>
+
+                      <div class="text-gray-400 text-xs font-bold uppercase mb-2 tracking-wide">
+                        Colors
+                      </div>
+                      <div class="flex gap-2 mb-5">
+                        <div
+                          *ngFor="let color of colorOptions"
+                          (click)="selectColor(group, color, true)"
+                          [ngClass]="color"
+                          class="w-8 h-8 rounded-lg cursor-pointer hover:scale-110 transition-transform relative flex items-center justify-center"
+                        >
+                          <mat-icon
+                            *ngIf="group.tempEditColor === color"
+                            class="!text-white text-sm font-bold"
+                            >check</mat-icon
+                          >
+                        </div>
+                      </div>
+
+                      <div class="flex gap-2">
+                        <button
+                          (click)="onDeleteRequest()"
+                          class="w-10 h-10 flex items-center justify-center border border-red-200 rounded text-red-500 hover:bg-red-50"
+                        >
+                          <mat-icon>delete_outline</mat-icon>
+                        </button>
+                        <button
+                          (click)="saveEdit()"
+                          class="flex-1 bg-[#F85890] hover:bg-pink-600 text-white rounded font-medium h-10 transition-colors"
+                        >
+                          Save
+                        </button>
                       </div>
                     </div>
+                  </mat-menu>
+                </div>
+              </div>
+
+              <div
+                *ngIf="group.isAdding"
+                class="mt-3 border rounded-lg p-4 bg-white shadow-sm animate-fade-in"
+              >
+                <div class="flex items-center gap-3 mb-4">
+                  <mat-icon class="text-gray-400">edit</mat-icon>
+                  <input
+                    type="text"
+                    [(ngModel)]="group.newStatusName"
+                    (keyup.enter)="saveNewStatus(group)"
+                    placeholder="Status Name..."
+                    class="flex-1 text-gray-700 font-medium border-b border-gray-200 focus:border-red-400 outline-none pb-1"
+                    autoFocus
+                  />
+                </div>
+                <div class="flex justify-between items-center">
+                  <div class="flex gap-2">
+                    <div
+                      *ngFor="let color of colorOptions"
+                      (click)="selectColor(group, color, false)"
+                      [ngClass]="color"
+                      class="w-6 h-6 rounded md:rounded-md cursor-pointer hover:scale-110 transition-transform"
+                      [class.ring-2]="group.newStatusColor === color"
+                      [class.ring-offset-2]="group.newStatusColor === color"
+                      [class.ring-gray-300]="group.newStatusColor === color"
+                    ></div>
+                  </div>
+                  <div class="flex gap-2">
+                    <button
+                      (click)="cancelAdd(group)"
+                      class="px-3 py-1 border rounded text-gray-500 text-sm hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      (click)="saveNewStatus(group)"
+                      class="px-3 py-1 bg-[#F85890] text-white rounded text-sm hover:bg-pink-600 shadow-sm flex items-center gap-1"
+                    >
+                      Save <mat-icon class="text-xs w-3 h-3">compare_arrows</mat-icon>
+                    </button>
                   </div>
                 </div>
+              </div>
+            </div>
 
+            <div class="flex justify-end gap-3 pt-4 pb-2">
+              <button
+                class="px-4 py-2 border border-gray-300 rounded-md text-gray-600 font-medium hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                (click)="saveTemplate()"
+                class="px-4 py-2 bg-[#F85890] text-white rounded-md font-medium hover:bg-pink-600 shadow-md"
+              >
+                Save Template
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="p-4 border-t border-gray-200 bg-white shrink-0 z-10">
-      <button (click)="saveAll()" 
-              class="w-full py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-md">
-        Create
+    <div class="p-4 bg-white shrink-0 z-10 flex justify-end">
+      <button
+        (click)="createProject()"
+        class="px-6 py-3 bg-[#F85890] hover:bg-pink-600 text-white font-bold rounded-lg cursor-pointer transition-colors shadow-lg active:transform active:scale-[0.99]"
+      >
+        Create Project
       </button>
     </div>
-
   </div>
+
+  <ng-template #reassignDeleteTemplate>
+    <div class="p-5 font-sans">
+      <div class="flex justify-between items-start mb-4">
+        <h2 class="text-lg font-bold text-gray-900">Status in use</h2>
+        <button (click)="closeDialog()" class="text-gray-400 hover:text-gray-600">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+        This status is currently assigned to
+        <span class="font-bold text-[#F85890]">{{ targetDeleteItem?.taskCount }} tasks</span>.
+        Please reassign those tasks to another status before deleting it.
+      </p>
+
+      <div class="border rounded-lg p-3 flex items-center bg-gray-50 mb-4">
+        <div class="w-6 h-6 rounded md:rounded-md mr-3" [ngClass]="targetDeleteItem?.color"></div>
+        <span class="font-medium text-gray-800">{{ targetDeleteItem?.name }}</span>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-gray-500 text-xs font-bold uppercase mb-2"
+          >Reassign tasks to</label
+        >
+        <div class="border border-gray-300 rounded-md px-3 py-2 bg-white">
+          <select
+            [(ngModel)]="reassignTargetStatus"
+            class="w-full bg-transparent outline-none text-gray-700 text-sm"
+          >
+            <option [ngValue]="null" disabled>Select Status</option>
+            <option *ngFor="let status of getAvailableStatuses()" [ngValue]="status">
+              {{ status.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-3">
+        <button
+          (click)="closeDialog()"
+          class="px-4 py-2 border border-gray-300 rounded-md text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="performDelete()"
+          [disabled]="!reassignTargetStatus"
+          class="px-4 py-2 bg-[#F85890] text-white rounded-md font-medium hover:bg-pink-600 shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Reassign & Delete
+        </button>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #deleteConfirmTemplate>
+    <div class="p-6 font-sans text-center">
+      <h2 class="text-lg font-bold text-gray-900 mb-2">Delete status?</h2>
+      <p class="text-gray-500 text-sm mb-6">
+        This status isn't assigned to any tasks.<br />
+        You can safely delete it.
+      </p>
+
+      <div
+        class="border rounded-lg p-3 flex items-center bg-gray-50 mb-6 text-left inline-block w-full"
+      >
+        <div class="w-8 flex justify-center">
+          <mat-icon class="text-gray-300">drag_indicator</mat-icon>
+        </div>
+        <div class="w-6 h-6 rounded md:rounded-md mx-3" [ngClass]="targetDeleteItem?.color"></div>
+        <span class="font-medium text-gray-800">{{ targetDeleteItem?.name }}</span>
+      </div>
+
+      <div class="flex gap-3 w-full">
+        <button
+          (click)="closeDialog()"
+          class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-600 font-medium hover:bg-gray-50 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="performDelete()"
+          class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md font-medium hover:bg-red-700 shadow-md transition-colors"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </ng-template>
 </app-modal-shell>
